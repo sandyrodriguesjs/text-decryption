@@ -1,40 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="style.css" />
-</head>
-
-<body>
+    <link rel="stylesheet" href="style.css"/>
+    <script src=""></script>
+    
+  </head>
+  
+  <body>
     <div class="frame_6">
-        <img src="img/Logo.png">
+      <img src="img/Logo.png" />
     </div>
     <div class="textarea_1">
-        <textarea name="" id="" cols="90" rows="45" style="resize: none" placeholder="Digite seu texto"></textarea>
+      <textarea name="" id="textarea_1" cols="90" rows="45" placeholder="Digite seu texto" style="resize: none"></textarea>
     </div>
-    <div class="frame_5">
-    </div>
-    <div class="frame_1">
-        
-    </div>
+    <div class="frame_5"></div>
+    <div class="frame_1"></div>
     <div class="frame_3">
-        <button type="button" class="button_1">
-            <label class="text_button_1">
-                Criptografar
-            </label>
-        </button>
-        <button type="button" class="button_2">
-            <label class="text_button_2">
-                Descriptografar
-            </label>
-        </button>
+      <button type="button" class="button_1" id="button_1" onclick="passarValor()">
+        <label class="text_button_1"> Criptografar </label>
+      </button>
+      <button type="button" class="button_2" id="button_2">
+        <label class="text_button_2"> Descriptografar </label>
+      </button>
     </div>
     <div class="card">
-        <!-- <div class="text_1">
+      <!-- <div class="text_1">
             <label for="">fdvbfdbdfbfd</label>
         </div>
         <div class="text_2">
@@ -42,13 +36,85 @@
         </div> -->
     </div>
     <div>
-        <textarea name="" id="" cols="30" rows="10" class="textarea_2">sdgsdgsdgsdgrgergrgergrfghgfhfghfghfghfghfghfhfgsdgsdgsdgasgwerfewrwrwerwerwerwgurfweuiher78wfgwefgweygfwe6gfweywyefweywefywewefweywefweyfgwefgweyfgwgyfuywegfuywegfuywegfuywegfuywegfywegfuywegfugy</textarea>
-        <button type="button" class="button_3">
-            <label class="text_button_3">
-                Copiar
-            </label>
-        </button>
+      <textarea name="" id="textarea_2" cols="30" rows="10" class="textarea_2" style="resize: none"></textarea>
+      <button type="button" class="button_3">
+        <label class="text_button_3"> Copiar </label>
+      </button>
     </div>
-</body>
-
+  </body>
 </html>
+
+<script>
+  function encryptText(text, key) {
+    // Converter a chave para uma matriz de bytes
+    var keyBytes = aesjs.utils.utf8.toBytes(key);
+
+    // Converter o texto para uma matriz de bytes
+    var textBytes = aesjs.utils.utf8.toBytes(text);
+
+    // Criar um objeto AES com a chave
+    var aesCtr = new aesjs.ModeOfOperation.ctr(keyBytes);
+
+    // Criptografar o texto
+    var encryptedBytes = aesCtr.encrypt(textBytes);
+
+    // Converter os bytes criptografados para uma string em base64
+    var encryptedText = aesjs.utils.hex.fromBytes(encryptedBytes);
+
+    // Retornar o texto criptografado
+    return encryptedText;
+  }
+
+  // Função para descriptografar um texto
+  function decryptText(encryptedText, key) {
+    // Converter a chave para uma matriz de bytes
+    var keyBytes = aesjs.utils.utf8.toBytes(key);
+
+    // Converter o texto criptografado para uma matriz de bytes
+    var encryptedBytes = aesjs.utils.hex.toBytes(encryptedText);
+
+    // Criar um objeto AES com a chave
+    var aesCtr = new aesjs.ModeOfOperation.ctr(keyBytes);
+
+    // Descriptografar o texto
+    var decryptedBytes = aesCtr.decrypt(encryptedBytes);
+
+    // Converter os bytes descriptografados para uma string UTF-8
+    var decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes);
+
+    // Retornar o texto descriptografado
+    return decryptedText;
+  }
+
+  function passarValor() {
+      var textarea = document.getElementById('textarea_1');
+      var valor = textarea.value;
+
+      return valor;
+      // var button = document.getElementById('button_1');
+      // button.innerText = valor;
+  }
+
+  document.getElementById("button_1").addEventListener("click", function () {
+    // Receber o valor do botão
+    var valueButtonEncrypt = passarValor();
+    var secretKey = 'valorsecreto123';
+
+    console.log(valueButtonEncrypt);
+
+    var textEncrypt = encryptText(valueButtonEncrypt, secretKey);
+    // console.log(textEncrypt);
+  });
+
+  document.getElementById("button_2").addEventListener("click", function () {
+    // Receber o valor do botão
+    var valueButtonDecrypt = this.value;
+
+    // Exibir o valor do botão no console
+    console.log("Valor do botão:", valueButtonDecrypt);
+  });
+
+  // var texto = 'Mikael';
+
+  // document.getElementById("textarea_2").value = texto;
+</script>
