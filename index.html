@@ -4,12 +4,14 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css"/>
-    <script src=""></script>
-    
+    <title>Text-decrypt</title>
+    <link rel="stylesheet" href="style.css" />
+    <script
+      type="text/javascript"
+      src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"
+    ></script>
   </head>
-  
+
   <body>
     <div class="frame_6">
       <img src="img/Logo.png" />
@@ -28,93 +30,124 @@
       </button>
     </div>
     <div class="card">
-      <!-- <div class="text_1">
-            <label for="">fdvbfdbdfbfd</label>
-        </div>
-        <div class="text_2">
-            <label for="">dsgvsdvsdvsd</label>
-        </div> -->
+      
     </div>
     <div>
-      <textarea name="" id="textarea_2" cols="30" rows="10" class="textarea_2" style="resize: none"></textarea>
+      <textarea name="" id="textarea_2" cols="30" rows="10" class="textarea_2" style="resize: none" ></textarea>
       <button type="button" class="button_3">
-        <label class="text_button_3"> Copiar </label>
+        <label class="text_button_3" id="copyButton"> Copiar </label>
       </button>
     </div>
   </body>
 </html>
 
 <script>
-  function encryptText(text, key) {
-    // Converter a chave para uma matriz de bytes
-    var keyBytes = aesjs.utils.utf8.toBytes(key);
+  //funcao feita para criptografar o texto informado
+  function encryptText(valueButtonEncrypt, deslocamento) {
+    var textoCriptografado = "";
 
-    // Converter o texto para uma matriz de bytes
-    var textBytes = aesjs.utils.utf8.toBytes(text);
+    for (var i = 0; i < valueButtonEncrypt.length; i++) {
+      var char = valueButtonEncrypt[i];
+      var codigoAscii = valueButtonEncrypt.charCodeAt(i);
 
-    // Criar um objeto AES com a chave
-    var aesCtr = new aesjs.ModeOfOperation.ctr(keyBytes);
+      // Verifica se o caractere é uma letra maiúscula
+      if (codigoAscii >= 65 && codigoAscii <= 90) {
+        char = String.fromCharCode(
+          ((codigoAscii - 65 + deslocamento) % 26) + 65
+        );
+      }
+      // Verifica se o caractere é uma letra minúscula
+      else if (codigoAscii >= 97 && codigoAscii <= 122) {
+        char = String.fromCharCode(
+          ((codigoAscii - 97 + deslocamento) % 26) + 97
+        );
+      }
 
-    // Criptografar o texto
-    var encryptedBytes = aesCtr.encrypt(textBytes);
+      textoCriptografado += char;
+    }
 
-    // Converter os bytes criptografados para uma string em base64
-    var encryptedText = aesjs.utils.hex.fromBytes(encryptedBytes);
-
-    // Retornar o texto criptografado
-    return encryptedText;
+    return textoCriptografado;
   }
 
-  // Função para descriptografar um texto
-  function decryptText(encryptedText, key) {
-    // Converter a chave para uma matriz de bytes
-    var keyBytes = aesjs.utils.utf8.toBytes(key);
+  //funcao feita para descriptografar o texto informado
+  function decryptText(valueButtonDecrypt, deslocamento) {
+    var textoDescriptografado = "";
 
-    // Converter o texto criptografado para uma matriz de bytes
-    var encryptedBytes = aesjs.utils.hex.toBytes(encryptedText);
+    for (var i = 0; i < valueButtonDecrypt.length; i++) {
+      var char = valueButtonDecrypt[i];
+      var codigoAscii = valueButtonDecrypt.charCodeAt(i);
 
-    // Criar um objeto AES com a chave
-    var aesCtr = new aesjs.ModeOfOperation.ctr(keyBytes);
+      // Verifica se o caractere é uma letra maiúscula
+      if (codigoAscii >= 65 && codigoAscii <= 90) {
+        char = String.fromCharCode(
+          ((codigoAscii - 65 - deslocamento + 26) % 26) + 65
+        );
+      }
+      // Verifica se o caractere é uma letra minúscula
+      else if (codigoAscii >= 97 && codigoAscii <= 122) {
+        char = String.fromCharCode(
+          ((codigoAscii - 97 - deslocamento + 26) % 26) + 97
+        );
+      }
 
-    // Descriptografar o texto
-    var decryptedBytes = aesCtr.decrypt(encryptedBytes);
+      textoDescriptografado += char;
+    }
 
-    // Converter os bytes descriptografados para uma string UTF-8
-    var decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes);
-
-    // Retornar o texto descriptografado
-    return decryptedText;
+    return textoDescriptografado;
   }
 
+  //funcao que recebe o valor contido no textarea_1
   function passarValor() {
-      var textarea = document.getElementById('textarea_1');
-      var valor = textarea.value;
+    var textarea = document.getElementById("textarea_1");
+    var valor = textarea.value;
 
-      return valor;
-      // var button = document.getElementById('button_1');
-      // button.innerText = valor;
+    return valor;
   }
 
+  //funcao que recebe o valor contido no textarea_2
+  function capturarValor(){
+    var textarea = document.getElementById("textarea_2");
+    var value = textarea.value;
+
+    return value;
+  }
+
+  //evento de clique correspondente ao button de criptografar o texto
   document.getElementById("button_1").addEventListener("click", function () {
     // Receber o valor do botão
     var valueButtonEncrypt = passarValor();
-    var secretKey = 'valorsecreto123';
+    var deslocamento = 3;
 
-    console.log(valueButtonEncrypt);
+    var textEncrypt = encryptText(valueButtonEncrypt, deslocamento);
 
-    var textEncrypt = encryptText(valueButtonEncrypt, secretKey);
-    // console.log(textEncrypt);
+    console.log(textEncrypt);
+
+    document.getElementById("textarea_2").value = textEncrypt;
   });
 
+  //evento de clique correspondente ao button de descriptografar o texto
   document.getElementById("button_2").addEventListener("click", function () {
     // Receber o valor do botão
-    var valueButtonDecrypt = this.value;
+    var valueButtonDecrypt = capturarValor();
+    var deslocamento = 3;
 
-    // Exibir o valor do botão no console
-    console.log("Valor do botão:", valueButtonDecrypt);
+    var textDecrypt = decryptText(valueButtonDecrypt, deslocamento);
+
+    document.getElementById("textarea_2").value = textDecrypt;
   });
 
-  // var texto = 'Mikael';
+  //evento de clique correspondente ao button de copiar o texto do textarea_2
+  document.getElementById("copyButton").addEventListener("click", function () {
+        // Selecionar o conteúdo do textarea
+        var textarea = document.getElementById("textarea_2");
+        textarea.select();
+        textarea.setSelectionRange(0, 99999); // Para dispositivos móveis
 
-  // document.getElementById("textarea_2").value = texto;
+        // Copiar o texto selecionado para a área de transferência
+        document.execCommand("copy");
+
+        // Alerta de sucesso (opcional)
+        alert("Texto copiado para a área de transferência!");
+  });
+
 </script>
